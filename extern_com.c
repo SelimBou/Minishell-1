@@ -26,7 +26,7 @@ int ls_command(params_t *params)
 
     if (pid < 0) {
         perror("fork");
-        return 1;
+        return 84;
     }
     if (pid == 0) {
         if (execve(ls_path, params->token_list, NULL) == -1) {

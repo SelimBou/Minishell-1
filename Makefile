@@ -14,6 +14,7 @@ SRC	=	main.c	\
 		my_strdup.c	\
 		strcmp.c	\
 		extern_com.c	\
+		intern_com.c	\
 
 OBJ	=	$(SRC:.c=.o)
 

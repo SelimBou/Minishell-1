@@ -16,7 +16,7 @@ static int which_command(params_t *params)
     if (my_strcmp(params->token_list[0], "unsetenv") == 0)
         return 0;
     if (my_strcmp(params->token_list[0], "env") == 0)
-        return 0;
+        env_command();
     if (my_strcmp(params->token_list[0], "exit") == 0)
         exit(EXIT_SUCCESS);
     if (my_strcmp(params->token_list[0], "ls") == 0)

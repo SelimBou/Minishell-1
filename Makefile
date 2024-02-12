@@ -13,6 +13,7 @@ SRC	=	main.c	\
 		my_strcpy.c	\
 		my_strdup.c	\
 		strcmp.c	\
+		extern_com.c	\
 
 OBJ	=	$(SRC:.c=.o)
 

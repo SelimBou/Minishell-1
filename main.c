@@ -7,30 +7,6 @@
 
 #include "shell_one.h"
 
-void ls_command(params_t *params)
-{
-    pid_t pid = fork();
-    char *args[params->number_token + 1];
-    int status;
-
-    if (pid == -1) {
-        perror("fork");
-        exit(EXIT_FAILURE);
-    }
-    if (pid == 0) {
-        for (int i = 0; i < params->number_token; i++) {
-            args[i] = params->token_list[i];
-        }
-        args[params->number_token] = NULL;
-        if (execvp("ls", args) == -1) {
-            perror("execvp");
-            exit(EXIT_FAILURE);
-        }
-    } else {
-        waitpid(pid, &status, 0);
-    }
-}
-
 static int which_command(params_t *params)
 {
     if (my_strcmp(params->token_list[0], "cd") == 0)
@@ -45,6 +21,10 @@ static int which_command(params_t *params)
         exit(EXIT_SUCCESS);
     if (my_strcmp(params->token_list[0], "ls") == 0)
         ls_command(params);
+    if (my_strcmp(params->token_list[0], "pwd") == 0)
+        pwd_command();
+    if (my_strcmp(params->token_list[0], "echo $?") == 0)
+        return 0;
 }
 
 static int num_of_tok(char *line)

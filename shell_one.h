@@ -18,6 +18,8 @@ typedef struct params {
     char **token_list;
     int number_token;
 } params_t;
+int ls_command(params_t *params);
+int pwd_command(void);
 char my_putchar(char c);
 int my_printf(const char *format, ...);
 int my_putstr(char *str);

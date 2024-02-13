@@ -20,6 +20,7 @@ typedef struct params {
     int number_token;
 } params_t;
 int unsetenv_cmd(params_t *params);
+int cd_command(params_t *params);
 void env_command(void);
 int ls_command(params_t *params);
 int pwd_command(void);

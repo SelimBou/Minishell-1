@@ -10,7 +10,7 @@
 static int which_command(params_t *params)
 {
     if (my_strcmp(params->token_list[0], "cd") == 0)
-        return 0;
+        cd_command(params);
     if (my_strcmp(params->token_list[0], "setenv") == 0)
         return 0;
     if (my_strcmp(params->token_list[0], "unsetenv") == 0)

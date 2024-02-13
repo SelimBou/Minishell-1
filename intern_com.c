@@ -7,6 +7,20 @@
 
 #include "shell_one.h"
 #include <stdbool.h>
+#include <limits.h>
+
+int cd_command(params_t *params)
+{
+    if (params->number_token > 1) {
+        perror("Misssing args");
+    }
+    if (params->number_token > 1)
+        params->token_list[1][my_strlen(params->token_list[1]) - 1] = '\0';
+    if (chdir(params->token_list[1]) < 0) {
+        perror(params->token_list[1]);
+        return 1;
+    }
+}
 
 void env_command()
 {

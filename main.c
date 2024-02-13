@@ -14,7 +14,7 @@ static int which_command(params_t *params)
     if (my_strcmp(params->token_list[0], "setenv") == 0)
         return 0;
     if (my_strcmp(params->token_list[0], "unsetenv") == 0)
-        return 0;
+        unsetenv_cmd(params);
     if (my_strcmp(params->token_list[0], "env") == 0)
         env_command();
     if (my_strcmp(params->token_list[0], "exit") == 0)
@@ -58,7 +58,8 @@ static int args_to_token(char *line)
         token = strtok(NULL, " ");
         i ++;
     }
-    params.token_list[0][strlen(params.token_list[0]) - 1] = '\0';
+    if (params.number_token == 1)
+        params.token_list[0][my_strlen(params.token_list[0]) - 1] = '\0';
     params.token_list[i] = NULL;
     which_command(&params);
 }
@@ -79,7 +80,7 @@ int start_shell(void)
     return 0;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
     if (argc != 1) {
         write(2, "Error in num of args\n", 22);

@@ -7,6 +7,7 @@
 
 #ifndef SHELL_ONE
     #define SHELL_ONE
+    #include <stdbool.h>
     #include <stdio.h>
     #include <unistd.h>
     #include <string.h>
@@ -18,7 +19,8 @@ typedef struct params {
     char **token_list;
     int number_token;
 } params_t;
-int env_command(void);
+int unsetenv_cmd(params_t *params);
+void env_command(void);
 int ls_command(params_t *params);
 int pwd_command(void);
 char my_putchar(char c);
@@ -28,4 +30,5 @@ int my_strlen(char const *str);
 char *my_strcpy(char *dest, char *src);
 int my_strcmp(const char *str1, const char *str2);
 char *my_strdup(char *str);
+bool my_str_isalpha(const char *str);
 #endif

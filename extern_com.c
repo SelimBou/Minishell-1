@@ -13,9 +13,9 @@ int pwd_command(void)
 
     if (getcwd(buffer, sizeof(buffer)) == NULL) {
         perror("getcwd");
-        return 1;
+        exit(84);
     }
-    printf("%s\n", getcwd(buffer, sizeof(buffer)));
+    my_printf("%s\n", getcwd(buffer, sizeof(buffer)));
     return 0;
 }
 
@@ -26,7 +26,7 @@ int ls_command(params_t *params)
 
     if (pid < 0) {
         perror("fork");
-        return 84;
+        exit(84);
     }
     if (pid == 0) {
         if (execve(ls_path, params->token_list, NULL) == -1) {

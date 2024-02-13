@@ -15,6 +15,8 @@ SRC	=	main.c	\
 		strcmp.c	\
 		extern_com.c	\
 		intern_com.c	\
+		my_str_isalpha.c	\
+		strncmp.c	\
 
 OBJ	=	$(SRC:.c=.o)
 

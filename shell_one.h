@@ -31,4 +31,5 @@ char *my_strcpy(char *dest, char *src);
 int my_strcmp(const char *str1, const char *str2);
 char *my_strdup(char *str);
 bool my_str_isalpha(const char *str);
+int my_strncmp(const char *s1, const char *s2, size_t n);
 #endif

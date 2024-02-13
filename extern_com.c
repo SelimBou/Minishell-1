@@ -24,6 +24,8 @@ int ls_command(params_t *params)
     char *ls_path = "/bin/ls";
     pid_t pid = fork();
 
+    if (params->number_token > 1)
+        params->token_list[1][my_strlen(params->token_list[1]) - 1] = '\0';
     if (pid < 0) {
         perror("fork");
         exit(84);

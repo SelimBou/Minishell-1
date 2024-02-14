@@ -23,7 +23,7 @@ static int which_command(params_t *params)
         ls_command(params);
     if (my_strcmp(params->token_list[0], "pwd") == 0)
         pwd_command();
-    if (my_strcmp(params->token_list[0], "echo $?") == 0)
+    if (my_strcmp(params->token_list[0], "echo") == 0)
         return 0;
 }
 
@@ -36,7 +36,7 @@ static int verify_command(params_t *params)
         my_strcmp(params->token_list[0], "exit") == 0 ||
         my_strcmp(params->token_list[0], "ls") == 0 ||
         my_strcmp(params->token_list[0], "pwd") == 0 ||
-        my_strcmp(params->token_list[0], "echo $?") == 0) {
+        my_strcmp(params->token_list[0], "echo") == 0) {
             which_command(params);
         } else {
             perror("Invalid command");

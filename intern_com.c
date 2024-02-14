@@ -10,14 +10,23 @@
 
 int cd_command(params_t *params)
 {
-    if (params->number_token != 2) {
-        perror("Missing args");
+    if (params->number_token > 2) {
+        perror("cd: too many arguments");
         return 1;
     }
-    if (chdir(params->token_list[1]) < 0) {
-        perror(params->token_list[1]);
-        return 1;
+    if (params->number_token == 1) {
+        if (chdir("/") != 0) {
+            perror("cd");
+            return 1;
+        }
     }
+    if (params->number_token == 2) {
+        if (chdir(params->token_list[1]) != 0) {
+            perror("cd");
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void env_command()

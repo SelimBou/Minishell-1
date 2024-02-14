@@ -20,6 +20,7 @@ typedef struct params {
     char **token_list;
     int number_token;
 } params_t;
+int echo_cmd(params_t *params);
 int setenv_cmd(params_t *params);
 int unsetenv_cmd(params_t *params);
 int cd_command(params_t *params);

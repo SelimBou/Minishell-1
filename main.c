@@ -27,6 +27,24 @@ static int which_command(params_t *params)
         return 0;
 }
 
+static int verify_command(params_t *params)
+{
+    if (my_strcmp(params->token_list[0], "cd") == 0 ||
+        my_strcmp(params->token_list[0], "setenv") == 0 ||
+        my_strcmp(params->token_list[0], "unsetenv") == 0 ||
+        my_strcmp(params->token_list[0], "env") == 0 ||
+        my_strcmp(params->token_list[0], "exit") == 0 ||
+        my_strcmp(params->token_list[0], "ls") == 0 ||
+        my_strcmp(params->token_list[0], "pwd") == 0 ||
+        my_strcmp(params->token_list[0], "echo $?") == 0) {
+            which_command(params);
+        } else {
+            perror("Invalid command");
+            exit(0);
+        }
+        return 0;
+}
+
 static int num_of_tok(char *line)
 {
     int number_token = 0;
@@ -58,29 +76,31 @@ static int args_to_token(char *line)
         token = strtok(NULL, " ");
         i ++;
     }
-    if (params.number_token == 1)
-        params.token_list[0][my_strlen(params.token_list[0]) - 1] = '\0';
+    params.token_list[i - 1][my_strlen(params.token_list[i - 1]) - 1] = '\0';
     params.token_list[i] = NULL;
-    which_command(&params);
+    verify_command(&params);
 }
 
 int start_shell(void)
 {
     char *line = NULL;
+    char current_dir[BUF_SIZE];
     size_t len = 0;
     size_t read;
 
-    my_printf("$> ");
+    getcwd(current_dir, sizeof(current_dir));
+    my_printf("[$>%s]", current_dir);
     read = getline(&line, &len, stdin);
     while (read != -1) {
         args_to_token(line);
-        my_printf("$> ");
+        getcwd(current_dir, sizeof(current_dir));
+        my_printf("[$>%s]", current_dir);
         read = getline(&line, &len, stdin);
     }
     return 0;
 }
 
-int main(int argc, char **argv, char **env)
+int main(int argc, char **argv)
 {
     if (argc != 1) {
         write(2, "Error in num of args\n", 22);

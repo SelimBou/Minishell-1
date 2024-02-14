@@ -7,6 +7,7 @@
 
 #ifndef SHELL_ONE
     #define SHELL_ONE
+    #define BUF_SIZE 1024
     #include <stdbool.h>
     #include <stdio.h>
     #include <unistd.h>

@@ -14,8 +14,6 @@ int cd_command(params_t *params)
         perror("Missing args");
         return 1;
     }
-    if (params->number_token > 1)
-        params->token_list[1][my_strlen(params->token_list[1]) - 1] = '\0';
     if (chdir(params->token_list[1]) < 0) {
         perror(params->token_list[1]);
         return 1;
@@ -49,8 +47,6 @@ int unsetenv_cmd(params_t *params)
     extern char **environ;
     char **env = environ;
 
-    if (params->number_token > 1)
-        params->token_list[1][my_strlen(params->token_list[1]) - 1] = '\0';
     if (check_args_unsetenv(params) == 1)
         exit(84);
     for (int i = 0; env[i] != NULL; i++) {

@@ -10,13 +10,14 @@ SRC	=	main.c	\
 		my_putstr.c	\
 		my_printf.c	\
 		my_strlen.c	\
-		my_strcpy.c	\
 		my_strdup.c	\
 		strcmp.c	\
 		extern_com.c	\
 		intern_com.c	\
 		my_str_isalpha.c	\
 		strncmp.c	\
+		my_strcpy.c	\
+		my_strcat.c	\
 
 OBJ	=	$(SRC:.c=.o)
 

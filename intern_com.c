@@ -71,23 +71,48 @@ int unsetenv_cmd(params_t *params)
     return 1;
 }
 
+static int check_malloc(params_t *params)
+{
+    if (params->new_value == NULL)
+        return 1;
+}
+
+static void verif(params_t *params)
+{
+    if (params->number_token == 2) {
+        params->new_value = malloc(my_strlen(params->token_list[1]) + 2);
+        check_malloc(params);
+        my_strcpy(params->new_value, params->token_list[1]);
+        my_strcat(params->new_value, "=");
+        my_strcat(params->new_value, "\0");
+    } else {
+        params->new_value = malloc(my_strlen(params->token_list[1])
+        + my_strlen(params->token_list[2]) + 2);
+        check_malloc(params);
+        my_strcpy(params->new_value, params->token_list[1]);
+        my_strcat(params->new_value, "=");
+        my_strcat(params->new_value, params->token_list[2]);
+    }
+}
+
 int setenv_cmd(params_t *params)
 {
     extern char **environ;
     char **env = environ;
     int n = 0;
-    char *new_value = malloc(strlen(params->token_list[1])
-    + strlen(params->token_list[2]) + 2);
 
-    if (new_value == NULL) {
+    if (params->number_token > 3 || params->number_token < 2)
         return 1;
-    }
-    strcpy(new_value, params->token_list[1]);
-    strcat(new_value, "=");
-    strcat(new_value, params->token_list[2]);
+    verif(params);
     for (int i = 0; env[i] != NULL; i ++) {
+        if (my_strncmp(env[i], params->token_list[1],
+            my_strlen(params->token_list[1])) == 0) {
+            env[i] = params->new_value;
+            return 0;
+        }
         n = i;
     }
-    env[n] = new_value;
+    env[n + 1] = params->new_value;
+    env[n + 2] = NULL;
     return 0;
 }

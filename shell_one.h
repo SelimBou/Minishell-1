@@ -19,6 +19,7 @@
 typedef struct params {
     char **token_list;
     int number_token;
+    char *new_value;
 } params_t;
 int echo_cmd(params_t *params);
 int setenv_cmd(params_t *params);
@@ -35,5 +36,7 @@ char *my_strcpy(char *dest, char *src);
 int my_strcmp(const char *str1, const char *str2);
 char *my_strdup(char *str);
 bool my_str_isalpha(const char *str);
+char *my_strcpy(char *dest, char *src);
 int my_strncmp(const char *s1, const char *s2, size_t n);
+char *my_strcat(char *dest, char *src);
 #endif

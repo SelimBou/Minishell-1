@@ -70,3 +70,24 @@ int unsetenv_cmd(params_t *params)
     my_printf("unsetenv: %s: variable not found\n", params->token_list[1]);
     return 1;
 }
+
+int setenv_cmd(params_t *params)
+{
+    extern char **environ;
+    char **env = environ;
+    int n = 0;
+    char *new_value = malloc(strlen(params->token_list[1])
+    + strlen(params->token_list[2]) + 2);
+
+    if (new_value == NULL) {
+        return 1;
+    }
+    strcpy(new_value, params->token_list[1]);
+    strcat(new_value, "=");
+    strcat(new_value, params->token_list[2]);
+    for (int i = 0; env[i] != NULL; i ++) {
+        n = i;
+    }
+    env[n] = new_value;
+    return 0;
+}

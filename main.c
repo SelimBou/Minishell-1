@@ -40,7 +40,7 @@ static int verify_command(params_t *params)
             which_command(params);
         } else {
             perror("Invalid command");
-            exit(0);
+            return 1;
         }
         return 0;
 }

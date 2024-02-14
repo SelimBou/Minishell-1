@@ -7,7 +7,7 @@
 
 #include "shell_one.h"
 
-int pwd_command(void)
+int pwd_command()
 {
     char buffer[4096];
 
@@ -31,7 +31,7 @@ int ls_command(params_t *params)
     if (pid == 0) {
         if (execve(ls_path, params->token_list, NULL) == -1) {
             perror("execve");
-            exit(EXIT_FAILURE);
+            return 2;
         }
     } else {
         waitpid(pid, NULL, 0);

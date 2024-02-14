@@ -47,8 +47,10 @@ int unsetenv_cmd(params_t *params)
     extern char **environ;
     char **env = environ;
 
-    if (check_args_unsetenv(params) == 1)
-        exit(84);
+    if (check_args_unsetenv(params) == 1) {
+        perror("missing args");
+        return 1;
+    }
     for (int i = 0; env[i] != NULL; i++) {
             if (my_strncmp(env[i], params->token_list[1],
                 my_strlen(params->token_list[1])) == 0) {

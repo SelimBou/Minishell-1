@@ -12,8 +12,7 @@ int pwd_command()
     char buffer[4096];
 
     if (getcwd(buffer, sizeof(buffer)) == NULL) {
-        perror("getcwd");
-        exit(84);
+        return 1;
     }
     my_printf("%s\n", getcwd(buffer, sizeof(buffer)));
     return 0;
@@ -25,12 +24,11 @@ int ls_command(params_t *params)
     pid_t pid = fork();
 
     if (pid < 0) {
-        perror("fork");
-        exit(84);
+        my_printf("Invalid pid\n");
+        return 2;
     }
     if (pid == 0) {
         if (execve(ls_path, params->token_list, NULL) == -1) {
-            perror("execve");
             return 2;
         }
     } else {

@@ -11,18 +11,16 @@
 int cd_command(params_t *params)
 {
     if (params->number_token > 2) {
-        perror("cd: too many arguments");
+        my_printf("cd: Trop d'arguments.\n");
         return 1;
     }
     if (params->number_token == 1) {
         if (chdir("/") != 0) {
-            perror("cd");
             return 1;
         }
     }
     if (params->number_token == 2) {
         if (chdir(params->token_list[1]) != 0) {
-            perror("cd");
             return 1;
         }
     }

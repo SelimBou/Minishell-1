@@ -39,7 +39,7 @@ static int verify_command(params_t *params)
         my_strcmp(params->token_list[0], "echo") == 0) {
             which_command(params);
         } else {
-            perror("Invalid command");
+            my_printf("Invalid command\n");
             return 1;
         }
         return 0;

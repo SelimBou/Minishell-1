@@ -51,8 +51,8 @@ static int verify_command(params_t *params, char **env)
         pid = fork();
         path = malloc(sizeof(char) * (my_strlen(params->token_list[0]) +
             my_strlen(path_init) + 1));
-        strcpy(path, path_init);
-        strcat(path, params->token_list[0]);
+        my_strcpy(path, path_init);
+        my_strcat(path, params->token_list[0]);
         exe_command(pid, params, env, path);
     }
     return 0;

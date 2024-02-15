@@ -21,13 +21,10 @@ typedef struct params {
     int number_token;
     char *new_value;
 } params_t;
-int echo_cmd(params_t *params);
 int setenv_cmd(params_t *params);
 int unsetenv_cmd(params_t *params);
 int cd_command(params_t *params);
 void env_command(void);
-int ls_command(params_t *params);
-int pwd_command(void);
 char my_putchar(char c);
 int my_printf(const char *format, ...);
 int my_putstr(char *str);

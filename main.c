@@ -19,30 +19,43 @@ static int which_command(params_t *params)
         env_command();
     if (my_strcmp(params->token_list[0], "exit") == 0)
         exit(EXIT_SUCCESS);
-    if (my_strcmp(params->token_list[0], "ls") == 0)
-        ls_command(params);
-    if (my_strcmp(params->token_list[0], "pwd") == 0)
-        pwd_command();
-    if (my_strcmp(params->token_list[0], "echo") == 0)
-        return 0;
 }
 
-static int verify_command(params_t *params)
+static int exe_command(pid_t pid, params_t *params, char **env, char *path)
 {
+    int status = 0;
+
+    if (pid == 0) {
+        if (execve(path, params->token_list, env) == -1) {
+            perror("Command not found\n");
+            exit(0);
+        }
+    } else
+        wait(&status);
+}
+
+static int verify_command(params_t *params, char **env)
+{
+    pid_t pid;
+    char *path_init = "/bin/";
+    char *path;
+    int status = 0;
+
     if (my_strcmp(params->token_list[0], "cd") == 0 ||
         my_strcmp(params->token_list[0], "setenv") == 0 ||
         my_strcmp(params->token_list[0], "unsetenv") == 0 ||
         my_strcmp(params->token_list[0], "env") == 0 ||
-        my_strcmp(params->token_list[0], "exit") == 0 ||
-        my_strcmp(params->token_list[0], "ls") == 0 ||
-        my_strcmp(params->token_list[0], "pwd") == 0 ||
-        my_strcmp(params->token_list[0], "echo") == 0) {
+        my_strcmp(params->token_list[0], "exit") == 0) {
             which_command(params);
-        } else {
-            my_printf("Invalid command\n");
-            return 1;
-        }
-        return 0;
+    } else {
+        pid = fork();
+        path = malloc(sizeof(char) * (my_strlen(params->token_list[0]) +
+            my_strlen(path_init) + 1));
+        strcpy(path, path_init);
+        strcat(path, params->token_list[0]);
+        exe_command(pid, params, env, path);
+    }
+    return 0;
 }
 
 static int num_of_tok(char *line)
@@ -58,7 +71,7 @@ static int num_of_tok(char *line)
     return number_token;
 }
 
-static int args_to_token(char *line)
+static int args_to_token(char *line, char **env)
 {
     params_t params;
     char *copy;
@@ -78,35 +91,36 @@ static int args_to_token(char *line)
     }
     params.token_list[i - 1][my_strlen(params.token_list[i - 1]) - 1] = '\0';
     params.token_list[i] = NULL;
-    verify_command(&params);
+    verify_command(&params, env);
 }
 
-int start_shell(void)
+int start_shell(char **env)
 {
     char *line = NULL;
     char current_dir[BUF_SIZE];
     size_t len = 0;
-    size_t read;
+    ssize_t read = 0;
 
-    getcwd(current_dir, sizeof(current_dir));
-    my_printf("[$>%s]", current_dir);
-    read = getline(&line, &len, stdin);
-    while (read != -1) {
-        args_to_token(line);
-        getcwd(current_dir, sizeof(current_dir));
-        my_printf("[$>%s]", current_dir);
+    while (1) {
+        if (isatty(0) == 1) {
+            getcwd(current_dir, sizeof(current_dir));
+            my_printf("[$>%s]", current_dir);
+        }
         read = getline(&line, &len, stdin);
+        if (read == -1)
+            return 0;
+        args_to_token(line, env);
     }
     return 0;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **env)
 {
     if (argc != 1) {
         write(2, "Error in num of args\n", 22);
         return 84;
     } else {
-        start_shell();
+        start_shell(env);
     }
     return 0;
 }

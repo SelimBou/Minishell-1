@@ -12,7 +12,6 @@ SRC	=	main.c	\
 		my_strlen.c	\
 		my_strdup.c	\
 		strcmp.c	\
-		extern_com.c	\
 		intern_com.c	\
 		my_str_isalpha.c	\
 		strncmp.c	\

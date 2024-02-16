@@ -34,25 +34,33 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
         wait(&status);
 }
 
-static int verify_command(params_t *params, char **env)
+static int check_built_in(params_t *params)
 {
-    pid_t pid;
-    char *path_init = "/bin/";
-    char *path;
-    int status = 0;
-
     if (my_strcmp(params->token_list[0], "cd") == 0 ||
         my_strcmp(params->token_list[0], "setenv") == 0 ||
         my_strcmp(params->token_list[0], "unsetenv") == 0 ||
         my_strcmp(params->token_list[0], "env") == 0 ||
         my_strcmp(params->token_list[0], "exit") == 0) {
-            which_command(params);
+            return 0;
+    }
+}
+
+static int verify_command(params_t *params, char **env)
+{
+    pid_t pid;
+    char *path_init = "/bin/";
+    char *path;
+
+    if (check_built_in(params) == 0) {
+        which_command(params);
     } else {
         pid = fork();
-        path = malloc(sizeof(char) * (my_strlen(params->token_list[0]) +
-            my_strlen(path_init) + 1));
-        my_strcpy(path, path_init);
-        my_strcat(path, params->token_list[0]);
+        if (params->token_list[0][0] != '.') {
+            path = malloc(sizeof(char) * (my_strlen(params->token_list[0]) +
+                my_strlen(path_init) + 1));
+            my_strcpy(path, path_init);
+            my_strcat(path, params->token_list[0]);
+        }
         exe_command(pid, params, env, path);
     }
     return 0;
@@ -71,7 +79,7 @@ static int num_of_tok(char *line)
     return number_token;
 }
 
-static int args_to_token(char *line, char **env)
+int args_to_token(char *line, char **env)
 {
     params_t params;
     char *copy;

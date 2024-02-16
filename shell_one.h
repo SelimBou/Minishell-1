@@ -21,6 +21,8 @@ typedef struct params {
     int number_token;
     char *new_value;
 } params_t;
+int is_alpha(char c);
+int alpha_num(const char *str);
 int setenv_cmd(params_t *params);
 int unsetenv_cmd(params_t *params);
 int cd_command(params_t *params);

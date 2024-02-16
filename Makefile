@@ -17,6 +17,8 @@ SRC	=	main.c	\
 		strncmp.c	\
 		my_strcpy.c	\
 		my_strcat.c	\
+		is_alpha.c	\
+		is_alpha_num.c	\
 
 OBJ	=	$(SRC:.c=.o)
 

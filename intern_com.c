@@ -38,22 +38,14 @@ void env_command()
 
 int check_args_unsetenv(params_t *params)
 {
-    int num_of_args = 0;
-
-    for (int i = 0; params->token_list[i] != NULL; i++) {
-        num_of_args++;
-    }
-    if (num_of_args != 2 || is_alpha(params->token_list[1][0]) == 1 ||
+    if (params->number_token < 2 || is_alpha(params->token_list[1][0]) == 1 ||
         alpha_num(params->token_list[1]) == 1)
         return 1;
     return 0;
 }
 
-int unsetenv_cmd(params_t *params)
+int unsetenv_cmd(params_t *params, char **env)
 {
-    extern char **environ;
-    char **env = environ;
-
     if (check_args_unsetenv(params) == 1) {
         my_printf("wrong args\n");
         return 1;
@@ -102,10 +94,8 @@ static void verif(params_t *params)
     }
 }
 
-int setenv_cmd(params_t *params)
+int setenv_cmd(params_t *params, char **env)
 {
-    extern char **environ;
-    char **env = environ;
     int n = 0;
 
     if (check_args_setenv(params) == 1) {

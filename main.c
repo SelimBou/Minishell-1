@@ -7,14 +7,14 @@
 
 #include "shell_one.h"
 
-static int which_command(params_t *params)
+static int which_command(params_t *params, char **env)
 {
     if (my_strcmp(params->token_list[0], "cd") == 0)
         cd_command(params);
     if (my_strcmp(params->token_list[0], "setenv") == 0)
-        setenv_cmd(params);
+        setenv_cmd(params, env);
     if (my_strcmp(params->token_list[0], "unsetenv") == 0)
-        unsetenv_cmd(params);
+        unsetenv_cmd(params, env);
     if (my_strcmp(params->token_list[0], "env") == 0)
         env_command();
     if (my_strcmp(params->token_list[0], "exit") == 0)
@@ -27,11 +27,12 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
 
     if (pid == 0) {
         if (execve(path, params->token_list, env) == -1) {
-            perror("Command not found\n");
+            my_printf("Command not found\n");
             exit(0);
         }
-    } else
+    } else {
         wait(&status);
+    }
 }
 
 static int check_built_in(params_t *params)
@@ -52,7 +53,7 @@ static int verify_command(params_t *params, char **env)
     char *path;
 
     if (check_built_in(params) == 0) {
-        which_command(params);
+        which_command(params, env);
     } else {
         pid = fork();
         if (params->token_list[0][0] != '.') {

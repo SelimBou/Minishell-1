@@ -23,8 +23,8 @@ typedef struct params {
 } params_t;
 int is_alpha(char c);
 int alpha_num(const char *str);
-int setenv_cmd(params_t *params);
-int unsetenv_cmd(params_t *params);
+int setenv_cmd(params_t *params, char **env);
+int unsetenv_cmd(params_t *params, char **env);
 int cd_command(params_t *params);
 void env_command(void);
 char my_putchar(char c);

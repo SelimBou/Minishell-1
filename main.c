@@ -16,9 +16,11 @@ static int which_command(params_t *params, char **env)
     if (my_strcmp(params->token_list[0], "unsetenv") == 0)
         unsetenv_cmd(params, env);
     if (my_strcmp(params->token_list[0], "env") == 0)
-        env_command();
-    if (my_strcmp(params->token_list[0], "exit") == 0)
+        env_command(env);
+    if (my_strcmp(params->token_list[0], "exit") == 0) {
+        my_printf("exit\n");
         exit(EXIT_SUCCESS);
+    }
 }
 
 static int exe_command(pid_t pid, params_t *params, char **env, char *path)
@@ -46,22 +48,52 @@ static int check_built_in(params_t *params)
     }
 }
 
+char *my_getenv(const char *name)
+{
+    extern char **environ;
+    size_t name_len = my_strlen(name);
+
+    for (int i = 0; environ[i] != NULL; i++) {
+        if (my_strncmp(environ[i], name, name_len) == 0 &&
+            environ[i][name_len] == '=') {
+            return environ[i] + name_len + 1;
+        }
+    }
+    return NULL;
+}
+
+char *which_path(char *command)
+{
+    char *path = my_getenv("PATH");
+    char *path_tok = strtok(my_strdup(path), ":");
+    char *all_path;
+    char *result;
+
+    while (path_tok != NULL) {
+        all_path = malloc(sizeof(char) * (my_strlen(path_tok) +
+            my_strlen(command) + 2));
+        my_strcpy(all_path, path_tok);
+        my_strcat(all_path, "/");
+        my_strcat(all_path, command);
+        if (access(all_path, X_OK) == 0) {
+            result = my_strdup(all_path);
+            break;
+        }
+        path_tok = strtok(NULL, ":");
+    }
+    return result;
+}
+
 static int verify_command(params_t *params, char **env)
 {
     pid_t pid;
-    char *path_init = "/bin/";
     char *path;
 
     if (check_built_in(params) == 0) {
         which_command(params, env);
     } else {
+        path = which_path(params->token_list[0]);
         pid = fork();
-        if (params->token_list[0][0] != '.') {
-            path = malloc(sizeof(char) * (my_strlen(params->token_list[0]) +
-                my_strlen(path_init) + 1));
-            my_strcpy(path, path_init);
-            my_strcat(path, params->token_list[0]);
-        }
         exe_command(pid, params, env, path);
     }
     return 0;
@@ -71,11 +103,11 @@ static int num_of_tok(char *line)
 {
     int number_token = 0;
     char *copy = my_strdup(line);
-    char *token = strtok(copy, " ");
+    char *token = strtok(copy, " \t\n");
 
     while (token != NULL) {
         number_token++;
-        token = strtok(NULL, " ");
+        token = strtok(NULL, " \t\n");
     }
     return number_token;
 }
@@ -86,19 +118,20 @@ int args_to_token(char *line, char **env)
     char *copy;
     char *token;
     int i = 0;
+    size_t len = my_strlen(line);
 
+    if (len > 0 && line[len - 1] == '\n')
+        line[len - 1] = '\0';
     params.number_token = num_of_tok(line);
     params.token_list = malloc(sizeof(char *) * params.number_token);
+    is_malloc_correct(&params);
     copy = my_strdup(line);
-    token = strtok(copy, " ");
-    if (params.token_list == NULL)
-        return -1;
+    token = strtok(copy, " \t\n");
     while (token != NULL) {
         params.token_list[i] = my_strdup(token);
-        token = strtok(NULL, " ");
+        token = strtok(NULL, " \t\n");
         i ++;
     }
-    params.token_list[i - 1][my_strlen(params.token_list[i - 1]) - 1] = '\0';
     params.token_list[i] = NULL;
     verify_command(&params, env);
 }

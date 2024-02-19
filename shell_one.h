@@ -21,12 +21,13 @@ typedef struct params {
     int number_token;
     char *new_value;
 } params_t;
+int is_malloc_correct(params_t *params);
 int is_alpha(char c);
 int alpha_num(const char *str);
 int setenv_cmd(params_t *params, char **env);
 int unsetenv_cmd(params_t *params, char **env);
 int cd_command(params_t *params);
-void env_command(void);
+void env_command(char **env);
 char my_putchar(char c);
 int my_printf(const char *format, ...);
 int my_putstr(char *str);

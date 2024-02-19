@@ -26,11 +26,8 @@ int cd_command(params_t *params)
     return 0;
 }
 
-void env_command()
+void env_command(char **env)
 {
-    extern char **environ;
-    char **env = environ;
-
     for (int i = 0; env[i] != NULL; i ++) {
         my_printf("%s\n", env[i]);
     }
@@ -44,21 +41,32 @@ int check_args_unsetenv(params_t *params)
     return 0;
 }
 
+static void re_order_env(char **env, int i)
+{
+    int j = i;
+
+    while (env[j] != NULL) {
+        env[j] = env[j + 1];
+        j ++;
+    }
+    env[j] = NULL;
+}
+
 int unsetenv_cmd(params_t *params, char **env)
 {
     if (check_args_unsetenv(params) == 1) {
-        my_printf("wrong args\n");
+        write(2, "wrong args\n", 12);
         return 1;
     }
     for (int i = 0; env[i] != NULL; i++) {
             if (my_strncmp(env[i], params->token_list[1],
                 my_strlen(params->token_list[1])) == 0) {
-                env[i] = NULL;
+                re_order_env(env, i);
                 return 0;
             }
     }
     my_printf("unsetenv: %s: variable not found\n", params->token_list[1]);
-    return 1;
+    return 0;
 }
 
 static int check_malloc(params_t *params)
@@ -99,7 +107,7 @@ int setenv_cmd(params_t *params, char **env)
     int n = 0;
 
     if (check_args_setenv(params) == 1) {
-        my_printf("wrong args\n");
+        write(2, "wrong args\n", 12);
         return 1;
     }
     verif(params);
@@ -109,9 +117,9 @@ int setenv_cmd(params_t *params, char **env)
             env[i] = params->new_value;
             return 0;
         }
-        n = i;
+        n ++;
     }
-    env[n + 1] = params->new_value;
-    env[n + 2] = NULL;
+    env[n] = params->new_value;
+    env[n + 1] = NULL;
     return 0;
 }

@@ -19,6 +19,7 @@ SRC	=	main.c	\
 		my_strcat.c	\
 		is_alpha.c	\
 		is_alpha_num.c	\
+		check_malloc.c	\
 
 OBJ	=	$(SRC:.c=.o)
 

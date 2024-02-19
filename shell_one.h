@@ -20,6 +20,8 @@ typedef struct params {
     char **token_list;
     int number_token;
     char *new_value;
+    char *copy;
+    char *token;
 } params_t;
 int is_malloc_correct(params_t *params);
 int is_alpha(char c);

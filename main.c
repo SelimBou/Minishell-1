@@ -29,8 +29,8 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
 
     if (pid == 0) {
         if (execve(path, params->token_list, env) == -1) {
-            my_printf("Command not found\n");
-            exit(0);
+            my_printf("Commande introuvable.\n");
+            exit(1);
         }
     } else {
         wait(&status);
@@ -92,7 +92,10 @@ static int verify_command(params_t *params, char **env)
     if (check_built_in(params) == 0) {
         which_command(params, env);
     } else {
-        path = which_path(params->token_list[0]);
+        if (params->token_list[0][0] != '.')
+            path = which_path(params->token_list[0]);
+        else
+            path = params->token_list[0];
         pid = fork();
         exe_command(pid, params, env, path);
     }
@@ -115,21 +118,21 @@ static int num_of_tok(char *line)
 int args_to_token(char *line, char **env)
 {
     params_t params;
-    char *copy;
-    char *token;
     int i = 0;
     size_t len = my_strlen(line);
 
     if (len > 0 && line[len - 1] == '\n')
         line[len - 1] = '\0';
     params.number_token = num_of_tok(line);
+    if (params.number_token == 0)
+        return 0;
     params.token_list = malloc(sizeof(char *) * params.number_token);
     is_malloc_correct(&params);
-    copy = my_strdup(line);
-    token = strtok(copy, " \t\n");
-    while (token != NULL) {
-        params.token_list[i] = my_strdup(token);
-        token = strtok(NULL, " \t\n");
+    params.copy = my_strdup(line);
+    params.token = strtok(params.copy, " \t\n");
+    while (params.token != NULL) {
+        params.token_list[i] = my_strdup(params.token);
+        params.token = strtok(NULL, " \t\n");
         i ++;
     }
     params.token_list[i] = NULL;
@@ -149,8 +152,9 @@ int start_shell(char **env)
             my_printf("[$>%s]", current_dir);
         }
         read = getline(&line, &len, stdin);
-        if (read == -1)
+        if (read == -1) {
             return 0;
+        }
         args_to_token(line, env);
     }
     return 0;

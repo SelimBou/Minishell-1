@@ -34,6 +34,7 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
         }
     } else {
         wait(&status);
+        exit(WEXITSTATUS(status));
     }
 }
 

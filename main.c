@@ -29,12 +29,12 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
 
     if (pid == 0) {
         if (execve(path, params->token_list, env) == -1) {
-            my_printf("Commande introuvable.\n");
-            exit(1);
+            my_printf("%s: Commande introuvable.\n", params->token_list[0]);
+            exit(0);
         }
     } else {
         wait(&status);
-        exit(WEXITSTATUS(status));
+        return WEXITSTATUS(status);
     }
 }
 
@@ -87,6 +87,7 @@ char *which_path(char *command)
 
 static int verify_command(params_t *params, char **env)
 {
+    int code_retour = 0;
     pid_t pid;
     char *path;
 
@@ -98,9 +99,9 @@ static int verify_command(params_t *params, char **env)
         else
             path = params->token_list[0];
         pid = fork();
-        exe_command(pid, params, env, path);
+        code_retour = exe_command(pid, params, env, path);
     }
-    return 0;
+    return code_retour;
 }
 
 static int num_of_tok(char *line)
@@ -137,7 +138,7 @@ int args_to_token(char *line, char **env)
         i ++;
     }
     params.token_list[i] = NULL;
-    verify_command(&params, env);
+    return verify_command(&params, env);
 }
 
 int start_shell(char **env)
@@ -146,6 +147,7 @@ int start_shell(char **env)
     char current_dir[BUF_SIZE];
     size_t len = 0;
     ssize_t read = 0;
+    int code_retour = 0;
 
     while (1) {
         if (isatty(0) == 1) {
@@ -154,11 +156,11 @@ int start_shell(char **env)
         }
         read = getline(&line, &len, stdin);
         if (read == -1) {
-            return 0;
+            return code_retour;
         }
-        args_to_token(line, env);
+        code_retour = args_to_token(line, env);
     }
-    return 0;
+    return code_retour;
 }
 
 int main(int argc, char **argv, char **env)
@@ -167,7 +169,7 @@ int main(int argc, char **argv, char **env)
         write(2, "Error in num of args\n", 22);
         return 84;
     } else {
-        start_shell(env);
+        return start_shell(env);
     }
     return 0;
 }

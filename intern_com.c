@@ -30,7 +30,7 @@ int cd_command(params_t *params)
     }
     if (params->number_token == 2 && strcmp(params->token_list[1], "~") != 0) {
         if (change_dir(params->token_list[1]) != 0) {
-            my_printf("cd: Le répertoire '%s' n'existe pas.\n",
+            my_printf("%s: No such file or directory.\n",
                 params->token_list[1]);
             return 1;
         }

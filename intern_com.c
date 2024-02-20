@@ -7,7 +7,7 @@
 
 #include "shell_one.h"
 
-int change_dir(char *dir)
+static int change_dir(char *dir)
 {
     if (chdir(dir) != 0)
         return 1;
@@ -47,8 +47,7 @@ void env_command(char **env)
 
 static int check_args_unsetenv(params_t *params)
 {
-    if (params->number_token < 2 || is_alpha(params->token_list[1][0]) == 1 ||
-        alpha_num(params->token_list[1]) == 1)
+    if (params->number_token < 2)
         return 1;
     return 0;
 }
@@ -67,7 +66,7 @@ static void re_order_env(char **env, int i)
 int unsetenv_cmd(params_t *params, char **env)
 {
     if (check_args_unsetenv(params) == 1) {
-        write(2, "wrong args\n", 12);
+        my_printf("unsetenv: Too few arguments\n");
         return 1;
     }
     for (int i = 0; env[i] != NULL; i++) {
@@ -77,7 +76,6 @@ int unsetenv_cmd(params_t *params, char **env)
                 return 0;
             }
     }
-    my_printf("unsetenv: %s: variable not found\n", params->token_list[1]);
     return 0;
 }
 
@@ -87,12 +85,21 @@ static int check_malloc(params_t *params)
         return 1;
 }
 
-static int check_args_setenv(params_t *params)
+int check_args_setenv(params_t *params)
 {
-    if (params->number_token > 3 || params->number_token < 2 ||
-        is_alpha(params->token_list[1][0]) == 1 ||
-        alpha_num(params->token_list[1]) == 1)
+    if (params->number_token > 3) {
+        my_printf("setenv: Too many arguments.\n");
         return 1;
+    }
+    if (params->number_token > 1 && is_alpha(params->token_list[1][0]) == 1) {
+        my_printf("setenv: Variable name must begin with a letter.\n");
+        return 1;
+    }
+    if (params->number_token > 1 && alpha_num(params->token_list[1]) == 1) {
+        my_printf("setenv: Variable name must contain alphanumeric ");
+        my_printf("characters.\n");
+        return 1;
+    }
     return 0;
 }
 
@@ -118,9 +125,11 @@ int setenv_cmd(params_t *params, char **env)
 {
     int n = 0;
 
-    if (check_args_setenv(params) == 1) {
-        write(2, "wrong args\n", 12);
+    if (check_args_setenv(params) == 1)
         return 1;
+    if (params->number_token == 1) {
+        env_command(env);
+        return 0;
     }
     verif(params);
     for (int i = 0; env[i] != NULL; i ++) {

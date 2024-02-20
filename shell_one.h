@@ -23,6 +23,8 @@ typedef struct params {
     char *copy;
     char *token;
 } params_t;
+int check_return(params_t *params);
+int check_args_setenv(params_t *params);
 int is_malloc_correct(params_t *params);
 int is_alpha(char c);
 int alpha_num(const char *str);

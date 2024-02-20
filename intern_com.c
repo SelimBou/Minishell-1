@@ -65,16 +65,21 @@ static void re_order_env(char **env, int i)
 
 int unsetenv_cmd(params_t *params, char **env)
 {
+    char *name = NULL;
+    char *temp = NULL;
+
     if (check_args_unsetenv(params) == 1) {
         my_printf("unsetenv: Too few arguments\n");
         return 1;
     }
     for (int i = 0; env[i] != NULL; i++) {
-            if (my_strncmp(env[i], params->token_list[1],
-                my_strlen(params->token_list[1])) == 0) {
-                re_order_env(env, i);
-                return 0;
-            }
+        temp = my_strdup(env[i]);
+        name = strtok(temp, "=");
+        if (name != NULL && my_strcmp(name, params->token_list[1]) == 0) {
+            re_order_env(env, i);
+            return 0;
+        }
+        free(temp);
     }
     return 0;
 }

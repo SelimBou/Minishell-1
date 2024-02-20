@@ -29,11 +29,14 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
 
     if (pid == 0) {
         if (execve(path, params->token_list, env) == -1) {
-            my_printf("%s: Commande introuvable.\n", params->token_list[0]);
-            exit(0);
+            my_printf("%s: Command not found.\n", params->token_list[0]);
+            exit(1);
         }
     } else {
         wait(&status);
+        if (WIFSIGNALED(status)) {
+            my_printf("%s\n", strsignal(WTERMSIG(status)));
+        }
         return WEXITSTATUS(status);
     }
 }

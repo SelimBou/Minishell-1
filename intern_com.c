@@ -7,19 +7,31 @@
 
 #include "shell_one.h"
 
+int change_dir(char *dir)
+{
+    if (chdir(dir) != 0)
+        return 1;
+    return 0;
+}
+
 int cd_command(params_t *params)
 {
+    char *current_dir = getcwd(NULL, 0);
+
     if (params->number_token > 2) {
         my_printf("cd: Trop d'arguments.\n");
         return 1;
     }
-    if (params->number_token == 1) {
-        if (chdir("/") != 0) {
+    if (params->number_token == 1 || (params->number_token == 2 &&
+        strcmp(params->token_list[1], "~") == 0)) {
+        if (change_dir("/") != 0) {
             return 1;
         }
     }
-    if (params->number_token == 2) {
-        if (chdir(params->token_list[1]) != 0) {
+    if (params->number_token == 2 && strcmp(params->token_list[1], "~") != 0) {
+        if (change_dir(params->token_list[1]) != 0) {
+            my_printf("cd: Le répertoire '%s' n'existe pas.\n",
+                params->token_list[1]);
             return 1;
         }
     }
@@ -33,7 +45,7 @@ void env_command(char **env)
     }
 }
 
-int check_args_unsetenv(params_t *params)
+static int check_args_unsetenv(params_t *params)
 {
     if (params->number_token < 2 || is_alpha(params->token_list[1][0]) == 1 ||
         alpha_num(params->token_list[1]) == 1)

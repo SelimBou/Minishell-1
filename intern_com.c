@@ -23,12 +23,12 @@ int cd_command(params_t *params)
         return 1;
     }
     if (params->number_token == 1 || (params->number_token == 2 &&
-        strcmp(params->token_list[1], "~") == 0)) {
-        if (change_dir("/") != 0) {
+        my_strcmp(params->token_list[1], "~") == 0)) {
+        if (change_dir("/") != 0)
             return 1;
-        }
     }
-    if (params->number_token == 2 && strcmp(params->token_list[1], "~") != 0) {
+    if (params->number_token == 2 &&
+        my_strcmp(params->token_list[1], "~") != 0) {
         if (change_dir(params->token_list[1]) != 0) {
             my_printf("%s: No such file or directory.\n",
                 params->token_list[1]);

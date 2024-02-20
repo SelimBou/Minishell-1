@@ -19,7 +19,7 @@ int cd_command(params_t *params)
     char *current_dir = getcwd(NULL, 0);
 
     if (params->number_token > 2) {
-        my_printf("bash: cd: trop d'arguments\n");
+        my_printf("cd: Trop d'arguments.\n");
         return 1;
     }
     if (params->number_token == 1 || (params->number_token == 2 &&

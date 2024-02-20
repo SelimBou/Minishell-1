@@ -23,6 +23,7 @@ typedef struct params {
     char *copy;
     char *token;
 } params_t;
+char *my_getenv(const char *name);
 int check_return(params_t *params);
 int check_args_setenv(params_t *params);
 int is_malloc_correct(params_t *params);

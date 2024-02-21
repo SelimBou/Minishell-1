@@ -26,7 +26,6 @@ static int which_command(params_t *params, char **env)
 static int exe_command(pid_t pid, params_t *params, char **env, char *path)
 {
     int status = 0;
-    int return_value = 0;
 
     if (pid == 0) {
         if (execve(path, params->token_list, env) == -1) {
@@ -37,6 +36,7 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
         waitpid(pid, &status, WUNTRACED);
         if (WIFSIGNALED(status)) {
             my_printf("%s\n", strsignal(WTERMSIG(status)));
+            return 128 + WTERMSIG(status);
         }
         return WEXITSTATUS(status);
     }

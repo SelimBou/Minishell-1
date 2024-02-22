@@ -15,6 +15,7 @@
     #include <signal.h>
     #include <stdlib.h>
     #include <sys/wait.h>
+    #include <sys/stat.h>
     #include <fcntl.h>
 typedef struct params {
     char **token_list;

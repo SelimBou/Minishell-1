@@ -91,21 +91,25 @@ char *which_path(char *command)
 
 static int verify_command(params_t *params, char **env)
 {
-    int code_retour = 0;
     pid_t pid;
-    char *path;
+    char *path = params->token_list[0];
+    struct stat path_stat;
 
     if (check_built_in(params) == 0) {
         which_command(params, env);
     } else {
+        stat(path, &path_stat);
+        if (S_ISDIR(path_stat.st_mode)) {
+            my_printf("%s: Permission denied.\n", path);
+            exit(1);
+        }
         if (params->token_list[0][0] != '.')
             path = which_path(params->token_list[0]);
         else
             path = params->token_list[0];
         pid = fork();
-        code_retour = exe_command(pid, params, env, path);
+        return exe_command(pid, params, env, path);
     }
-    return code_retour;
 }
 
 static int num_of_tok(char *line)

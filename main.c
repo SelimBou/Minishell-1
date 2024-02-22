@@ -34,10 +34,8 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
         }
     } else {
         waitpid(pid, &status, WUNTRACED);
-        if (WIFSIGNALED(status)) {
-            my_printf("%s\n", strsignal(WTERMSIG(status)));
-            return 128 + WTERMSIG(status);
-        }
+        if (WIFSIGNALED(status))
+            return return_signal(status);
         return WEXITSTATUS(status);
     }
 }

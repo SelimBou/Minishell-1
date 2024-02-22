@@ -24,6 +24,7 @@ typedef struct params {
     char *copy;
     char *token;
 } params_t;
+int return_signal(int status);
 char *my_getenv(const char *name);
 int check_return(params_t *params);
 int check_args_setenv(params_t *params);

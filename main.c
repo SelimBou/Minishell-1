@@ -10,17 +10,18 @@
 static int which_command(params_t *params, char **env)
 {
     if (my_strcmp(params->token_list[0], "cd") == 0)
-        cd_command(params);
+        return cd_command(params);
     if (my_strcmp(params->token_list[0], "setenv") == 0)
-        setenv_cmd(params, env);
+        return setenv_cmd(params, env);
     if (my_strcmp(params->token_list[0], "unsetenv") == 0)
-        unsetenv_cmd(params, env);
+        return unsetenv_cmd(params, env);
     if (my_strcmp(params->token_list[0], "env") == 0)
         env_command(env);
     if (my_strcmp(params->token_list[0], "exit") == 0) {
         my_printf("exit\n");
         exit(EXIT_SUCCESS);
     }
+    return 0;
 }
 
 static int exe_command(pid_t pid, params_t *params, char **env, char *path)
@@ -97,7 +98,7 @@ static int verify_command(params_t *params, char **env)
     struct stat path_stat;
 
     if (check_built_in(params) == 0) {
-        which_command(params, env);
+        return which_command(params, env);
     } else {
         check_if_dir(path, &path_stat);
         if (params->token_list[0][0] != '.')

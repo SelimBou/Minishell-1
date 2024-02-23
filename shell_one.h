@@ -24,7 +24,8 @@ typedef struct params {
     char *copy;
     char *token;
 } params_t;
-int return_signal(int status);
+int check_if_dir(char *path, struct stat *path_stat);
+int exe_command2(params_t *params, char **env);
 char *my_getenv(const char *name);
 int check_return(params_t *params);
 int check_args_setenv(params_t *params);

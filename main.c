@@ -34,13 +34,12 @@ static int exe_command(pid_t pid, params_t *params, char **env, char *path)
             exit(1);
         }
     } else {
-        waitpid(pid, &status, WUNTRACED);
-        if (WTERMSIG(status) == SIGSEGV) {
-            my_printf("Segmentation fault\n");
+        wait(&status);
+        if (WIFEXITED(status)) {
+            return WEXITSTATUS(status);
+        } else {
             return 0;
         }
-        if (WIFEXITED(status))
-            return WEXITSTATUS(status);
     }
 }
 
@@ -100,17 +99,17 @@ static int verify_command(params_t *params, char **env)
     if (check_built_in(params) == 0) {
         which_command(params, env);
     } else {
-        stat(path, &path_stat);
-        if (S_ISDIR(path_stat.st_mode)) {
-            my_printf("%s: Permission denied.\n", path);
-            exit(1);
-        }
+        check_if_dir(path, &path_stat);
         if (params->token_list[0][0] != '.')
             path = which_path(params->token_list[0]);
         else
             path = params->token_list[0];
-        pid = fork();
-        return exe_command(pid, params, env, path);
+        if (exe_command2(params, env) == 0)
+            return 0;
+        else {
+            pid = fork();
+            return exe_command(pid, params, env, path);
+        }
     }
 }
 

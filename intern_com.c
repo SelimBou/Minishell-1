@@ -7,7 +7,7 @@
 
 #include "shell_one.h"
 
-static int change_dir(char *dir)
+int change_dir(char *dir)
 {
     if (chdir(dir) != 0)
         return 1;
@@ -17,24 +17,23 @@ static int change_dir(char *dir)
 int cd_command(params_t *params)
 {
     char *current_dir = getcwd(NULL, 0);
+    char *old_dir = my_getenv("OLDPWD");
 
     if (params->number_token > 2) {
         my_printf("cd: Too many arguments.\n");
         return 1;
+    }
+    if (params->number_token == 2 &&
+        my_strcmp(params->token_list[1], "-") == 0) {
+        if (change_dir(old_dir) != 0)
+            return 1;
     }
     if (params->number_token == 1 || (params->number_token == 2 &&
         my_strcmp(params->token_list[1], "~") == 0)) {
         if (change_dir(my_getenv("HOME")) != 0)
             return 1;
     }
-    if (params->number_token == 2 &&
-        my_strcmp(params->token_list[1], "~") != 0) {
-        if (change_dir(params->token_list[1]) != 0) {
-            my_printf("%s: No such file or directory.\n",
-                params->token_list[1]);
-            return 1;
-        }
-    }
+    last_case_cd(params);
     return 0;
 }
 
@@ -90,7 +89,7 @@ static int check_malloc(params_t *params)
         return 1;
 }
 
-int check_args_setenv(params_t *params)
+static int check_args_setenv(params_t *params)
 {
     if (params->number_token > 3) {
         my_printf("setenv: Too many arguments.\n");

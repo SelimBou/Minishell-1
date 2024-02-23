@@ -7,6 +7,19 @@
 
 #include "shell_one.h"
 
+int last_case_cd(params_t *params)
+{
+    if (params->number_token == 2 &&
+        my_strcmp(params->token_list[1], "~") != 0 &&
+        my_strcmp(params->token_list[1], "-") != 0) {
+        if (change_dir(params->token_list[1]) != 0) {
+            my_printf("%s: No such file or directory.\n",
+                params->token_list[1]);
+            return 1;
+        }
+    }
+}
+
 int check_if_dir(char *path, struct stat *path_stat)
 {
     stat(path, path_stat);

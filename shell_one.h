@@ -24,6 +24,7 @@ typedef struct params {
     char *copy;
     char *token;
 } params_t;
+int check_args_cd(params_t *params);
 int last_case_cd(params_t *params);
 int change_dir(char *dir);
 int check_if_dir(char *path, struct stat *path_stat);

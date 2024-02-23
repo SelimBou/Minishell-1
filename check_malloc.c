@@ -7,6 +7,14 @@
 
 #include "shell_one.h"
 
+int check_args_cd(params_t *params)
+{
+    if (params->number_token > 2) {
+        my_printf("cd: Too many arguments.\n");
+        return 1;
+    }
+}
+
 int last_case_cd(params_t *params)
 {
     if (params->number_token == 2 &&
@@ -17,6 +25,7 @@ int last_case_cd(params_t *params)
                 params->token_list[1]);
             return 1;
         }
+        return 0;
     }
 }
 

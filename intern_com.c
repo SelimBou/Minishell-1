@@ -19,19 +19,19 @@ int cd_command(params_t *params)
     char *current_dir = getcwd(NULL, 0);
     char *old_dir = my_getenv("OLDPWD");
 
-    if (params->number_token > 2) {
-        my_printf("cd: Too many arguments.\n");
+    if (check_args_cd(params) == 1)
         return 1;
-    }
     if (params->number_token == 2 &&
         my_strcmp(params->token_list[1], "-") == 0) {
         if (change_dir(old_dir) != 0)
             return 1;
+        return 0;
     }
     if (params->number_token == 1 || (params->number_token == 2 &&
-        my_strcmp(params->token_list[1], "~") == 0)) {
-        if (change_dir(my_getenv("HOME")) != 0)
+        my_strcmp(params->token_list[1], "--") == 0)) {
+        if (change_dir("/") != 0)
             return 1;
+        return 0;
     }
     last_case_cd(params);
     return 0;

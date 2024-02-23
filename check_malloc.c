@@ -21,7 +21,7 @@ int last_case_cd(params_t *params)
         my_strcmp(params->token_list[1], "~") != 0 &&
         my_strcmp(params->token_list[1], "-") != 0) {
         if (change_dir(params->token_list[1]) != 0) {
-            my_printf("%s: No such file or directory.\n",
+            my_printf("%s: Not a directory.\n",
                 params->token_list[1]);
             return 1;
         }

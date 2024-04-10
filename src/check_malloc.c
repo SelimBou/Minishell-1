@@ -54,8 +54,9 @@ int exe_command2(params_t *params, char **env)
         segf[0] = malloc(sizeof(char) * my_strlen(params->token_list[0]) + 2);
         my_strcat(segf[0], "./");
         my_strcat(segf[0], params->token_list[0]);
-        if (execve(segf[0], segf, env) == -1)
+        if (execve(segf[0], segf, env) == -1) {
             exit(1);
+        }
     } else {
         wait(&status);
         if (WIFEXITED(status)) {

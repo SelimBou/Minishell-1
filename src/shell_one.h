@@ -17,6 +17,7 @@
     #include <sys/wait.h>
     #include <sys/stat.h>
     #include <fcntl.h>
+    #include <errno.h>
 typedef struct params {
     char **token_list;
     int number_token;

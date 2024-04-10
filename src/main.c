@@ -72,7 +72,7 @@ char *my_getenv(const char *name)
 char *which_path(char *command)
 {
     char *path = my_getenv("PATH");
-    char *path_tok = strtok(my_strdup(path), ":");
+    char *path_tok = strtok(my_strdup(path), " \t\n:");
     char *all_path;
     char *result;
 
@@ -86,7 +86,7 @@ char *which_path(char *command)
             result = my_strdup(all_path);
             break;
         }
-        path_tok = strtok(NULL, ":");
+        path_tok = strtok(NULL, " \t\n:");
     }
     return result;
 }
